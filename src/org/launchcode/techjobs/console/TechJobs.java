@@ -56,20 +56,41 @@ public class TechJobs {
 
                 // What is their search term?
                 System.out.println("\nSearch term: ");
-                String searchTerm = in.nextLine();
+                String searchTerm = in.nextLine().toLowerCase();
+
+                ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
+                    jobs.addAll(searchAllFields(columnChoices, searchTerm));
                 } else {
-                    ArrayList<HashMap<String, String>> jobs = JobData.findByColumnAndValue(searchField, searchTerm);
-                    if (jobs.isEmpty()) {
-                        System.out.println("No jobs found for the search term '" + searchTerm + "'");
-                    } else {
-                        printJobs(jobs);
-                    }
+                    jobs.addAll(searchByField(searchField, searchTerm));
+                }
+
+                if (jobs.isEmpty()) {
+                    System.out.println("No jobs found for the search term " + searchTerm + ".");
+                } else {
+                    printJobs(jobs);
                 }
             }
         }
+    }
+
+    private static ArrayList<HashMap<String, String>> searchAllFields(HashMap<String, String> fieldMap, String searchTerm) {
+        Set<String> fields = fieldMap.keySet();
+        ArrayList<HashMap<String, String>> results = new ArrayList<>();
+
+        for (String field : fields) {
+            // The "all" field is unsearchable; don't search it to avoid a null pointer exception.
+            if (!field.equals("all")) {
+                results.addAll(searchByField(field, searchTerm));
+            }
+        }
+
+        return results;
+    }
+
+    private static ArrayList<HashMap<String, String>> searchByField(String searchField, String searchTerm) {
+        return JobData.findByColumnAndValue(searchField, searchTerm);
     }
 
     // ﻿Returns the key of the selected item from the choices Dictionary
