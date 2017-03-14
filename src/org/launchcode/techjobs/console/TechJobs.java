@@ -140,10 +140,9 @@ public class TechJobs {
         for (HashMap<String, String> job : someJobs) {
             Set<String> keys = job.keySet();
             for (String key : keys) {
-                System.out.print(key + ": " + job.get(key) + "; ");
+                System.out.println(key + ": " + job.get(key));
             }
-            System.out.println();
-            System.out.println("----");
+            System.out.println("****");
         }
     }
 }
