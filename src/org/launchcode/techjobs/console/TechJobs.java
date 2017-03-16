@@ -95,6 +95,7 @@ public class TechJobs {
                     System.out.println("" + j + " - " + choices.get(choiceKeys[j]));
                 }
 
+            // Exception handling for if the user enters a non-integer.
             try {
                 choiceIdx = in.nextInt();
                 in.nextLine();
