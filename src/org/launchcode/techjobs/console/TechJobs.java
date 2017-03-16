@@ -1,9 +1,6 @@
 package org.launchcode.techjobs.console;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class TechJobs {
 
@@ -61,9 +58,9 @@ public class TechJobs {
                 ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
 
                 if (searchField.equals("all")) {
-                    jobs.addAll(searchAllFields(columnChoices, searchTerm));
+                    jobs.addAll(JobData.findByValue(searchTerm));
                 } else {
-                    jobs.addAll(searchByField(searchField, searchTerm));
+                    jobs.addAll(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
 
                 if (jobs.isEmpty()) {
@@ -75,28 +72,10 @@ public class TechJobs {
         }
     }
 
-    private static ArrayList<HashMap<String, String>> searchAllFields(HashMap<String, String> fieldMap, String searchTerm) {
-        Set<String> fields = fieldMap.keySet();
-        ArrayList<HashMap<String, String>> results = new ArrayList<>();
-
-        for (String field : fields) {
-            // The "all" field is unsearchable; don't search it to avoid a null pointer exception.
-            if (!field.equals("all")) {
-                results.addAll(searchByField(field, searchTerm));
-            }
-        }
-
-        return results;
-    }
-
-    private static ArrayList<HashMap<String, String>> searchByField(String searchField, String searchTerm) {
-        return JobData.findByColumnAndValue(searchField, searchTerm);
-    }
-
     // ﻿Returns the key of the selected item from the choices Dictionary
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
-        Integer choiceIdx;
+        Integer choiceIdx = 0;
         Boolean validChoice = false;
         String[] choiceKeys = new String[choices.size()];
 
@@ -109,22 +88,26 @@ public class TechJobs {
         }
 
         do {
+                System.out.println("\n" + menuHeader);
 
-            System.out.println("\n" + menuHeader);
+                // Print available choices
+                for (Integer j = 0; j < choiceKeys.length; j++) {
+                    System.out.println("" + j + " - " + choices.get(choiceKeys[j]));
+                }
 
-            // Print available choices
-            for (Integer j = 0; j < choiceKeys.length; j++) {
-                System.out.println("" + j + " - " + choices.get(choiceKeys[j]));
-            }
+            try {
+                choiceIdx = in.nextInt();
+                in.nextLine();
 
-            choiceIdx = in.nextInt();
-            in.nextLine();
-
-            // Validate user's input
-            if (choiceIdx < 0 || choiceIdx >= choiceKeys.length) {
-                System.out.println("Invalid choice. Try again.");
-            } else {
-                validChoice = true;
+                // Validate user's input
+                if (choiceIdx < 0 || choiceIdx >= choiceKeys.length) {
+                    System.out.println("Invalid choice. Try again.");
+                } else {
+                    validChoice = true;
+                }
+            } catch (InputMismatchException ex) {
+                System.out.println("Please enter a whole number.");
+                in.next();
             }
 
         } while(!validChoice);
