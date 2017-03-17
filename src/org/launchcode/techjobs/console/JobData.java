@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -52,6 +50,27 @@ public class JobData {
         loadData();
 
         return allJobs;
+    }
+
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+        loadData();
+
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+
+        for (HashMap<String, String> job : allJobs) {
+            Set<String> jobKeys = job.keySet();
+            for (String key : jobKeys) {
+                if (!key.equals("all")) {
+                    if (job.get(key).toLowerCase().contains(value.toLowerCase())) {  // If the value of the current key contains the search term
+                        if (!jobs.contains(job)) {  // If the job isn't already in jobs
+                            jobs.add(job);
+                        }
+                    }
+                }
+            }
+        }
+
+        return jobs;
     }
 
     /**
